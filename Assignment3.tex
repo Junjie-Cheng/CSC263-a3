@@ -44,14 +44,32 @@
 %Question1
 \begin{solution}
 \begin{parts}
+\part Each node will contain the following:
+\begin{enumerate}
+\item id: an int represent the id of the thread. This is the key.
+
+\item parent: a pointer to the parent node.
+
+\item left: a pointer to the left child.
+
+\item right: a pointer to the right child.
+\end{enumerate}
+
+The auxiliary information is:
+\begin{enumerate}
+\item status: a character which is one of ${A, R, S}$, representing the status of the thread.
+\item hasR: a Boolean indicating whether any node in the subtree rooted at the current node represents a thread with status $R$. 
+\end{enumerate}
+
+
 \part 
-We are using the id of the thread as the key of the tree node.
-
-The auxiliary information is the following:
-
-status: a character which is one of ${A, R, S}$, representing the status of the thread.
-
-hasR: a Boolean indicating whether any node in the tree rooted at the current node represents a thread with status $R$.
+\begin{enumerate}
+    \item NewThread(t)
+    \item Find(i)
+    \item Completed(i)
+    \item ChangeStatus(i, stat)
+    \item ScheduleNext
+\end{enumerate}
 
 The augmented data are labelled in the form (status\_hasR) beside each node.
 
@@ -99,7 +117,28 @@ child {node[label=50:$R\_T$] {14}
 \question
 %Question2
 \begin{solution}
+\begin{parts}
+\part 
+Since $h_1$ and $h_2$ are both under SUHA,  $prob(h_1(x) empty) = prob(h_1(x) empty) = \frac{k}{m} $ . x will not be inserted into an empty slot only if both $h_1(x)$ and $h_2(x)$ are not empty, otherwise x will choose the shorter chain, i.e. an empty slot. Therefore, the probability for x being inserted into an empty slot is $1-{(\frac{m-k}{m})}^2$.
 
+\part 
+$EX(length) = 3 \times \frac{7}{16} +  6 \times \frac{5}{16} +  9 \times \frac{4}{16} = \frac{87}{16}$
+
+Verification: Counting each possibility and resulted length in the table, we could get the formula above.\\
+
+\centering
+\begin{tabular}{ccccc}
+$h_1(x)$/$h_2(x)$    & T{[}0{]} & T{[}1{]} & T{[}2{]} & T{[}3{]} \\
+T{[}0{]} & 6        & 3        & 6        & 6        \\
+T{[}1{]} & 3        & 3        & 3        & 3        \\
+T{[}2{]} & 6        & 3        & 9        & 9        \\
+T{[}3{]} & 6        & 3        & 9        & 9       
+\end{tabular}
+
+
+
+
+\end{parts}
 \end{solution}
 
 
@@ -176,7 +215,4 @@ Consider line 1 of $\proc{Process\_query}(T, A, B)$, in the worst case, there ar
 \end{solution}
 
 \end{questions}
-
-
-
 \end{document}
