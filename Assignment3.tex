@@ -105,8 +105,15 @@ child {node[label=50:$R\_T$] {14}
 \part 
 \begin{enumerate}
     \item NewThread(t)
+   
+    First, create the node, then perform the AVL insert, which according to the AVL’s property will take O(logn).
+    
+     If the new thread's stat equals to 'R', during the path of insertion, update any bypassing node from False to True. All other nodes which are not on the path or nodes whose hasR is True remain unchanged. Since the update only add a few steps during insertion, it will still take O(logn). Moreover, during rotation, the only nodes need to be updated are the pivot nodes, so it takes O(1).
+
     \item Find(i)
+
     \item Completed(i)
+    
     \item ChangeStatus(i, stat)
     \item ScheduleNext
 \end{enumerate}
