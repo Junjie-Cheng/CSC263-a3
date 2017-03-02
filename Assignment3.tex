@@ -32,8 +32,8 @@
  
 
 
-\title{CSC263: Assignment 2}
-\date{February 9th, 2017}
+\title{CSC263: Assignment 3}
+\date{March 2nd, 2017}
 \author{Junjie Cheng, Jiayun Liu, Zi Hao Lin}
 \maketitle
 
@@ -61,15 +61,7 @@ The auxiliary information is:
 \item hasR: a Boolean indicating whether any node in the subtree rooted at the current node represents a thread with status $R$. 
 \end{enumerate}
 
-
-\part 
-\begin{enumerate}
-    \item NewThread(t)
-    \item Find(i)
-    \item Completed(i)
-    \item ChangeStatus(i, stat)
-    \item ScheduleNext
-\end{enumerate}
+Sample tree:
 
 The augmented data are labelled in the form (status\_hasR) beside each node.
 
@@ -109,7 +101,15 @@ child {node[label=50:$R\_T$] {14}
 \end{tikzpicture}
 \end{minipage}
 
-\part
+
+\part 
+\begin{enumerate}
+    \item NewThread(t)
+    \item Find(i)
+    \item Completed(i)
+    \item ChangeStatus(i, stat)
+    \item ScheduleNext
+\end{enumerate}
 
 \end{parts}
 \end{solution}
