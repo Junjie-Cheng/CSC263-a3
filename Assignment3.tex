@@ -53,7 +53,6 @@ status: a character which is one of ${A, R, S}$, representing the status of the 
 hasR: a Boolean indicating whether any node in the tree rooted at the current node represents a thread with status $R$.
 
 
-
 \end{parts}
 \end{solution}
 
@@ -68,7 +67,7 @@ hasR: a Boolean indicating whether any node in the tree rooted at the current no
 %Question3
 \begin{solution}
 \begin{enumerate}
-\item A Hash table of size $?$ and two arrays of length $26$ is used in the algorithm.
+\item A Hash table of size $?$, containing a dictionary of (String: int), an array of String and an array of int are used in the algorithm. Both arrays have length of $26$.
 
 The assumption: SUHA%, universal hashing%
 
@@ -80,6 +79,7 @@ After the dictionary is created or updated, we compare the value of the dictiona
 
 When a query occurs, the algorithm will return the words in array $A$ one by one, i.e. the most frequent word beginning with each letter in sorted order.
 
+\item 
 \end{enumerate}
 \end{solution}
 
