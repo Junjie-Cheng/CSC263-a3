@@ -44,14 +44,54 @@
 %Question1
 \begin{solution}
 \begin{parts}
-\part The auxiliary information is the following:
+\part 
+We are using the id of the thread as the key of the tree node.
 
-id: an int represent the id of the thread.
+The auxiliary information is the following:
 
 status: a character which is one of ${A, R, S}$, representing the status of the thread.
 
 hasR: a Boolean indicating whether any node in the tree rooted at the current node represents a thread with status $R$.
 
+The augmented data are labelled in the form (status\_hasR) beside each node.
+
+
+\begin{minipage}[t]{\linewidth}
+                \centering
+\begin{tikzpicture}
+[ 
+level distance=9mm, 
+every node/.style={circle, draw, inner sep=1.5pt},
+level 1/.style={sibling distance=45mm}, 
+level 2/.style={sibling distance=22mm}, 
+level 3/.style={sibling distance=10mm},
+level 4/.style={sibling distance=7mm},
+label distance=-1mm
+]
+
+\node (root) [label=90:$A\_T$] {10} 
+child {node[label=130:$S\_T$] {8} 
+	child {node[label=130:$R\_T$] {7} 
+		child {node[label=130:$A\_F$] {6}} 
+		child {missing}
+	}
+	child {node[label=50:$R\_T$] {9}
+	} 
+}
+child {node[label=50:$R\_T$] {14}
+		child {node[label=130:$S\_F$] {12}
+		    child{node[label=130:$A\_F$] {11}}
+		    child{missing}
+ 	}
+ 	child {node[label=50:$A\_T$] {19}
+		child {node[label=130:$R\_T$] {15}}
+		child {node[label=50:$S\_F$] {21}}
+	}
+};
+\end{tikzpicture}
+\end{minipage}
+
+\part
 
 \end{parts}
 \end{solution}
@@ -67,19 +107,71 @@ hasR: a Boolean indicating whether any node in the tree rooted at the current no
 %Question3
 \begin{solution}
 \begin{enumerate}
-\item A Hash table of size $?$, containing a dictionary of (String: int), an array of String and an array of int are used in the algorithm. Both arrays have length of $26$.
+\item A Hash table of size $m$, containing elements with the attributes (key: String, freq: int), an array of String and an array of int are used in the algorithm. Both arrays have length of $26$.
 
-The assumption: SUHA%, universal hashing%
+The assumption: SUHA
 
-\item There are $2$ arrays of length $26$, $A$ and $B$, to keep track of the most frequent word beginning with each alphabet and the frequency of that word. (The first element will represent words that begin with letter 'a', the second will represent words that begin with letter 'b', etc.) Initially, each element in $A$ is $null$ and each element in $B$ is $0$. 
+(Other assumptions)
+We assume $\proc{$Chained\_Hash\_Search$}(T, key)$ returns null if there is no element with that key in the hash table.
 
-When a new word (other than query) is input, we hash it into the hash table of $?$ slots. When putting the word into the hash table, instead of storing the word directly, we store a pointer of a dictionary into the slot. The key of the dictionary is the string of the word and the value is the number of time the word being input (initially the value will be $1$). When the same word is input again, we can find the dictionary in the hash table and then increment the value by $1$. 
+We also assume the array index begins with 0.
 
-After the dictionary is created or updated, we compare the value of the dictionary (i.e. the frequency of the word) with the corresponding highest frequency among the words beginning with the same letter. If the current word has a higher frequency (or has the same frequency but occurs earilier in alphabetical order), then we update the array with the new word and new frequency. 
+We also assume that all words inputs begins with English alphabet a-z and A-Z.
+
+\item There are $2$ arrays of length $26$, $A$ and $B$, to keep track of the most frequent word that begins with each alphabet and the frequency of that word. (The first element will represent words that begin with letter 'a', the second will represent words that begin with letter 'b', etc.) Initially, each element in $A$ is $null$ and each element in $B$ is $0$. 
+
+When a word $w$ (other than query) is input, we first search whether there is an element $x$ with $x.key=w$. If $x$ does not exist then we create the element $y$ with $y.key=w$ and $y.freq=1$ and hash it into the hash table $T$. If $x$ exists, then we increment $x.freq$ by $1$.
+
+After the element is created or updated, we extract the first character of the word and compare the attribute $freq$ with the corresponding highest frequency (among the words beginning with the same alphabet). If the current word has a higher frequency (or has the same frequency but occurs earlier in alphabetical order), then we update the arrays $A$ and $B$ with the new word and new frequency. 
 
 When a query occurs, the algorithm will return the words in array $A$ one by one, i.e. the most frequent word beginning with each letter in sorted order.
 
 \item 
+The following variables are used by both code to process an input word and the code for query.
+\begin{codebox}
+\li T // The hash table
+\li A // The array keeping track of the most frequent words beginning with each letter
+\li B // The array keeping track of the corresponding frequency
+\end{codebox}
+The code to process an input word.
+We assume $\proc{Chained\_Hash\_Search}(T, key)$ returns null if there is no element with that key in the hash table.
+We also assume the array index begins with 0.
+\begin{codebox}
+\Procname{$\proc{Process\_word}(word, T, A, B)$}
+\li $x \gets \proc{Chained\_Hash\_Search}(T, word)$ 
+\li \If $(x)$ // The element exists; the word has been input before
+\li 	\Then $x.freq++$; 
+\li \Else // The word has not been input before
+\li 	$y.key=word$; $y.freq=1$; // Create a object y with key=word and freq=1
+\li 	$\proc{Chained\_Hash\_Insert}(T, y)$;
+\li 	$x\gets y$ \End // Use variable x to represent the element
+\li $c \gets word[0].lowercase$; // Get the lower case of the first letter of the input word.
+\li $d \gets c-'a'$ // Arithmetic operations on chars' ASCII value. Note 'a' is a char.
+\li \If $(x.freq > B[d]$ or $(x.freq=B[d]$ and $word<A[d]))$ 
+\li     \Then $A[d] \gets word$;
+\li     $B[d] \gets x.freq$; \End
+\end{codebox}
+
+\begin{codebox}
+\Procname{$\proc{Process\_query}(T, A, B)$}
+\li \For $(i=0; i<26; i++)$ \Do
+\li     $\proc{$print$}(A[i])$;
+\end{codebox}
+
+\item
+Input process time:
+
+Under the assumption of simple uniform hashing, by theorem 11.1 and theorem 11.2 in CLRS, $\proc{Chained\_Hash\_Search}(T, key)$ takes $\Theta{(1+\alpha)}$ time, regardless of whether it is successful, where, $\alpha=\frac{l}{m}$ is a constant. So, $\proc{Chained\_Hash\_Search}(T, key)$ takes $\Theta{(1+\alpha)}=\Theta{(1+\frac{l}{m})}=\Theta{(1)}$. 
+
+$\proc{Chained\_Hash\_Insert}(T, y)$, according to the CLRS book, has worst-case running time $O(1)$, which indicates that it is also in $\Theta{(1)}$. So the expected running time for line 6 is also $\Theta{(1)}$.
+
+Also note that all other lines in $\proc{Process\_word}(word, T, A, B)$ consists only finite number of comparisons, assignments, and arithmetic operations, which are all $\Theta{(1)}$ operations. So the expected running time for all other lines is also $\Theta{(1)}$.
+
+Since all parts of the code has expected running time $\Theta{(1)}$ , the expected time to process each input is $\Theta{(1)}$.
+
+Query operation perform time:
+
+Consider line 1 of $\proc{Process\_query}(T, A, B)$, in the worst case, there are 27 assignments and 27 comparisons made. In the loop, print operation in line 2 is executed 26 times. Since assignment, comparison and print all take linear time, the worst-case time complexity for query operation is $\Theta{(1)}$.
 \end{enumerate}
 \end{solution}
 
