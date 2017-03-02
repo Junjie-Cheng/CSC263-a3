@@ -103,12 +103,77 @@ child {node[label=50:$R\_T$] {14}
 
 
 \part 
+
+We begin with helper functions
+\begin{codebox}
+\Procname{$\proc{UpdateR}(node)$}
+\li \If $(node.left.hasR$ or $node.right.hasR$ or $node.status == $R$)$ \Then
+\li     $node.hasR = True$;
+\li \Else 
+\li     $node.hasR = False$;
+\end{codebox}
+\begin{codebox}
+\Procname{$\proc{RecUpdateR}(node)$}
+\li \While $(node.parent != null)$ \Do
+\li     $\proc{UpdateR}(node)$
+\li     $node = node.parent$;
+\end{codebox}
+
+Note that since the height of an AVL tree is in $O(\log{n})$, $\proc{RecUpdateR}(node)$ has worst case time complexity $O(\log{n})$.
+
 \begin{enumerate}
-    \item NewThread(t)
-    \item Find(i)
-    \item Completed(i)
-    \item ChangeStatus(i, stat)
-    \item ScheduleNext
+    \item $\proc{NewThread}(t)$
+    
+    First, create the node, then perform the AVL insert, which according to the AVL’s property will take O(logn).
+    
+     If the new thread's stat equals to 'R', during the path of insertion, update any bypassing node from False to True. All other nodes which are not on the path or nodes whose hasR is True remain unchanged. Since the update only add a few steps during insertion, it will still take O(logn). Moreover, during rotation, the only nodes need to be updated are the pivot nodes, so it takes O(1).
+    
+    \item $\proc{Find}(i)$
+    
+    It has the same implementation of $\proc{AVL-Search}(i)$, which takes $O(\log{n})$ time.
+    
+    \item $\proc{Completed}(i)$
+    
+    First, we locate the node $x$ with key $i$ by $x = \proc{AVL-Search}(i)$, if it does not exist then return $-1$. If it exists, then we store the node's parent $xp=x.parent$, since we will need to update the attribute $hasR$ of nodes on the path descend to $x$. We then perform $\proc{AVL-Delete}(i)$. If the deleted node has attribute $status=R$, then before any rotations are made, we need first update the $hasR$ attribute of the nodes on the path by calling $\proc{RecUpdateR}(node)$.
+    
+    If rotations are made, whether or not the deleted node has attribute $status=R$, we will have to update the rotated nodes' $hasR$ attribute. So after rotation, we will have to call $\proc{UpdateR}(node)$ on node $A$ and $B$ in Figure 9 in AVL note handout for a single rotation, or on nodes $A$, $B$, and $C$, in Figure 10 in AVL note handout for a double rotation. After that, both AVL property and hasR property are maintained.
+    
+    Note that $\proc{AVL-Search}(i)$, $\proc{AVL-Delete}(i)$ and $\proc{RecUpdateR}(node)$ has worst case time complexity $O(\log{n})$, and that $\proc{UpdateR}(node)$ runs in linear time and is called at most three times, we can conclude that $\proc{Completed}(i)$ runs in $O(\log{n})$ in the worst case.
+    
+    \item $\proc{ChangeStatus}(i, stat)$
+    We first find the node and then change status and update hasR.
+    \begin{codebox}
+    \li $x = \proc{AVL-Find}(i)$
+    \li $x.status = stat$
+    \li $\proc{RecUpdateR}(x)$
+    \end{codebox}
+    
+    Since $\proc{AVL-Find}(i)$ and $\proc{RecUpdateR}(x)$ runs in $O(\log{n})$, the function runs in $O(\log{n})$ in the worst case.
+    
+    \item $\proc{ScheduleNext}$
+    
+    We first find the smallest node with $status=R$, update the status, update parent's $hasR$, and return the node.
+    \begin{codebox}
+    \Procname{$\proc{Find}(root)$}
+    \li \If $(!root.left$ and $ !root.right)$
+    \li \Then \Return null;
+    \li \ElseIf $(root.left.hasR)$
+    \li \Then \Return $\proc{Find}(root.left)$
+    \li \ElseIf $(root.status == "R")$
+    \li \Then \Return root;
+    \li \ElseIf $(root.right.hasR)$
+    \li \Then \Return $\proc{Find}(root.right)$
+    \end{codebox}
+    \begin{codebox}
+    \Procname{$\proc{ScheduleNext}$}
+    \li $x= \proc{Find}(root)$
+    \li $x.status = A$
+    \li $\proc{RecUpdateR}(x)$
+    \li \Return x
+    \end{codebox}
+    
+    Since the height of an AVL tree is in $O(\log{n})$, $\proc{Find}(root)$ runs in $O(\log{n})$. Also, $\proc{RecUpdateR}(x)$ runs in $O(\log{n})$, so $\proc{ScheduleNext}$ runs in $O(\log{n})$ in the worst case.
+    
 \end{enumerate}
 
 \end{parts}
@@ -151,7 +216,7 @@ T{[}3{]} & 6        & 3        & 9        & 9
 The assumption: SUHA
 
 (Other assumptions)
-We assume $\proc{$Chained\_Hash\_Search$}(T, key)$ returns null if there is no element with that key in the hash table.
+We assume $\proc{Chained\_Hash\_Search}(T, key)$ returns null if there is no element with that key in the hash table.
 
 We also assume the array index begins with 0.
 
