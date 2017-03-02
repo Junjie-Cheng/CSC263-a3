@@ -44,13 +44,32 @@
 %Question1
 \begin{solution}
 \begin{parts}
-\part The auxiliary information is the following:
+\part Each node will contain the following:
+\begin{enumerate}
+\item id: an int represent the id of the thread. This is the key.
 
-id: an int represent the id of the thread.
+\item parent: a pointer to the parent node.
 
-status: a character which is one of ${A, R, S}$, representing the status of the thread.
+\item left: a pointer to the left child.
 
-hasR: a Boolean indicating whether any node in the tree rooted at the current node represents a thread with status $R$.
+\item right: a pointer to the right child.
+\end{enumerate}
+
+The auxiliary information is:
+\begin{enumerate}
+\item status: a character which is one of ${A, R, S}$, representing the status of the thread.
+\item hasR: a Boolean indicating whether any node in the subtree rooted at the current node represents a thread with status $R$. 
+\end{enumerate}
+
+
+\part 
+\begin{enumerate}
+    \item NewThread(t)
+    \item Find(i)
+    \item Completed(i)
+    \item ChangeStatus(i, stat)
+    \item ScheduleNext
+\end{enumerate}
 
 
 \end{parts}
@@ -70,7 +89,7 @@ Verification: Counting each possibility and resulted length in the table, we cou
 
 \centering
 \begin{tabular}{ccccc}
-$h_1$/$h_2$    & T{[}0{]} & T{[}1{]} & T{[}2{]} & T{[}3{]} \\
+$h_1(x)$/$h_2(x)$    & T{[}0{]} & T{[}1{]} & T{[}2{]} & T{[}3{]} \\
 T{[}0{]} & 6        & 3        & 6        & 6        \\
 T{[}1{]} & 3        & 3        & 3        & 3        \\
 T{[}2{]} & 6        & 3        & 9        & 9        \\
